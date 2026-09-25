@@ -137,3 +137,6 @@ def unlock(device_id: int):
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     return device
+
+
+# Git test
