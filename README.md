@@ -45,3 +45,4 @@ smart_home/
 └── oop_practice/
     └── smart_home_oop.py
 ```
+Проект находится в процессе разработки.
