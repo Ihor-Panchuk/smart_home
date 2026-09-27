@@ -45,7 +45,20 @@ def device_status(device_id: int):
     device = database.get_device(device_id)
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
-    return device
+    if device["device_type"] == "light":
+        status = {"id": device["id"],
+                  "is_on": device["is_on"],
+                  "brightness": device["brightness"]}
+        return status
+    elif device["device_type"] == "thermostat":
+        status = {"id": device["id"],
+                  "is_on": device["is_on"],
+                  "temperature": device["temperature"]}
+        return status
+    elif device["device_type"] == "door_lock":
+        status = {"id": device["id"],
+                  "is_locked": device["is_locked"]}
+        return status
 
 
 # удаление устройств
