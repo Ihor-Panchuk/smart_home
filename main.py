@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import database
+from fastapi.staticfiles import StaticFiles
 
 
 class DeviceData(BaseModel):
@@ -25,6 +26,7 @@ class TemperatureData(BaseModel):
 
 
 app = FastAPI()
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 
 @app.get("/devices")
