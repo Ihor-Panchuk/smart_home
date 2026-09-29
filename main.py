@@ -61,6 +61,9 @@ def device_status(device_id: int):
         status = {"id": device["id"],
                   "is_locked": device["is_locked"]}
         return status
+    else:
+        raise HTTPException(
+            status_code=400, detail="Неизвестный тип устройства")
 
 
 # удаление устройств
