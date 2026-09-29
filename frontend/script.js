@@ -145,8 +145,26 @@ button.addEventListener('click', function() {
                                 fetch("/devices/" + data[i].id + "/unlock", {
                                     method: "PUT"
                                 })
+                                .then(response => {
+                                    return response.json();
+                                })
+                                .then(updatedDevice => {
+                                    console.log(updatedDevice);
+                                    data[i].is_locked = updatedDevice.is_locked;
+                                    is_locked.textContent = 'is_locked: ' + updatedDevice.is_locked;
+                                })
                             } else {
-
+                                fetch("/devices/" + data[i].id + "/lock", {
+                                    method: "PUT"
+                                })
+                                .then(response => {
+                                    return response.json()
+                                })
+                                .then(updatedDevice => {
+                                    console.log(updatedDevice);
+                                    data[i].is_locked = updatedDevice.is_locked;
+                                    is_locked.textContent = 'is_locked: ' + updatedDevice.is_locked;
+                                })
                             }
                         })
                     }
