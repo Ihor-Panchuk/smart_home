@@ -1,7 +1,44 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: #f5f5f5;
+    color: #f5f5f7;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(80, 80, 85, 0.45),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 70%,
+            rgba(55, 55, 60, 0.5),
+            transparent 40%
+        ),
+        linear-gradient(
+            135deg,
+            #111113,
+            #1c1c1e,
+            #242426
+        );
+
+    background-size: 140% 140%;
+    animation: backgroundMove 18s ease-in-out infinite alternate;
+
+    min-height: 100vh;
+}
+
+@keyframes backgroundMove {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 100%;
+    }
 }
 
 h1 {
@@ -17,12 +54,12 @@ h2 {
     gap: 15px; 
 }
 #devices > div {
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 15px;
+    background-color: #2c2c2e;
+    border: 1px solid #3a3a3c;
+    border-radius: 12px;
+    padding: 18px;
     width: 220px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 #devices h3 {
@@ -35,12 +72,15 @@ h2 {
 }
 
 button {
-    padding: 8px 12px;
+    padding: 8px 14px;
     margin: 5px;
     cursor: pointer;
-    border: 1px solid #aaa;
-    border-radius: 5px;
-    background-color: #eee;
+    border: none;
+    border-radius: 6px;
+    background-color: #e8e8e8;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
 button:hover {
@@ -87,4 +127,72 @@ button:active {
 .device-unlocked {
     color: green;
     font-weight: bold;
+}
+
+.button-on {
+    background-color: #d4edda;
+    color: #155724
+}
+
+.button-off {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+h1, h2 {
+    color: #f5f5f7;
+}
+#devices h3 {
+    color: #f5f5f7;
+}
+#devices p {
+    color: #a1a1a6;
+}
+
+.card-light {
+    border-top: 4px solid #ffd60a !important;
+}
+.card-thermostat {
+    border-top: 4px solid #fa3605 !important;
+}
+.card-door {
+    border-top: 4px solid #64d2ff !important;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    pad: 9px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+button:active {
+    transform: scale(0.96);
+}
+.button-on {
+    background-color: #30d158;
+    color: #000000;
+}
+.button-off {
+    background-color: #ff453a;
+    color: #ffffff;
+}
+
+#devices input {
+    background-color: #1c1c1e;
+    color: #f5f5f7;
+    border: 1px solid #48484a;
+    border-radius: 7px;
+    padding: 7px;
+}
+
+#devices input:focus {
+    outline: none;
+    border-color: #0a84ff;
 }

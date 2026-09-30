@@ -8,6 +8,17 @@ button.addEventListener('click', function() {
             response.json().then(data => {
                 for (let i = 0; i < data.length; i++) {
                     const card = document.createElement("div");
+
+                    if (data[i].device_type === "light") {
+                        card.classList.add("card-light");
+                    }
+                    if (data[i].device_type === "thermostat") {
+                        card.classList.add("card-thermostat");
+                    }
+                    if (data[i].device_type === "door_lock") {
+                        card.classList.add("card-door");
+                    }
+
                     const button = document.createElement("button");
                     button.addEventListener("click", function() {
                         if (data[i].is_on) {
@@ -28,6 +39,14 @@ button.addEventListener('click', function() {
                                     is_on.classList.add("device-off");
                                 }
 
+                                button.classList.remove("button-on", "button-off");
+
+                                if (updatedDevice.is_on) {
+                                    button.classList.add("button-on");
+                                } else {
+                                    button.classList.add("button-off");
+                                }
+
                                 if (updatedDevice.is_on) {
                                     button.textContent = "Выключить";
                                 } else {
@@ -44,8 +63,15 @@ button.addEventListener('click', function() {
                             .then(updatedDevice => {
                                 data[i].is_on = updatedDevice.is_on;
                                 is_on.textContent = 'is_on: ' + updatedDevice.is_on;
-
                                 is_on.classList.remove("device-on", "device-off");
+
+                                button.classList.remove("button-on", "button-off");
+
+                                if (updatedDevice.is_on) {
+                                    button.classList.add("button-on");
+                                } else {
+                                    button.classList.add("button-off");
+                                }
 
                                 if (updatedDevice.is_on) {
                                     is_on.classList.add("device-on");
@@ -81,7 +107,14 @@ button.addEventListener('click', function() {
                     } else {
                         is_on.classList.add("device-off");
                     }
-                    
+                    if (data[i].is_on) {
+                        button.classList.add("button-on");
+                    } else {
+                        button.classList.add("button-off");
+                    }
+
+                    console.log(button.className);
+
                     card.appendChild(title);
                     card.appendChild(type);
                     card.appendChild(id);
