@@ -19,7 +19,14 @@ button.addEventListener('click', function() {
                             })
                             .then(updatedDevice => {
                                 data[i].is_on = updatedDevice.is_on;
-                                is_on.textContent = 'is_on: ' + updatedDevice.is_on;
+                                is_on.textContent = 'is_on: ' + updatedDevice.is_on;  
+                                
+                                is_on.classList.remove("device-on", "device-off");
+                                if (updatedDevice.is_on) {
+                                    is_on.classList.add("device-on");
+                                }  else {
+                                    is_on.classList.add("device-off");
+                                }
 
                                 if (updatedDevice.is_on) {
                                     button.textContent = "Выключить";
@@ -37,6 +44,14 @@ button.addEventListener('click', function() {
                             .then(updatedDevice => {
                                 data[i].is_on = updatedDevice.is_on;
                                 is_on.textContent = 'is_on: ' + updatedDevice.is_on;
+
+                                is_on.classList.remove("device-on", "device-off");
+
+                                if (updatedDevice.is_on) {
+                                    is_on.classList.add("device-on");
+                                } else {
+                                    is_on.classList.add("device-off");
+                                }
 
                                 if (updatedDevice.is_on) {
                                     button.textContent = "Выключить";
@@ -60,6 +75,11 @@ button.addEventListener('click', function() {
                         button.textContent = "Выключить";
                     } else {
                         button.textContent = "Включить";
+                    }
+                    if (data[i].is_on) {
+                        is_on.classList.add("device-on");
+                    } else {
+                        is_on.classList.add("device-off");
                     }
                     
                     card.appendChild(title);
@@ -136,6 +156,11 @@ button.addEventListener('click', function() {
                     if (data[i].device_type === 'door_lock') {
                         const is_locked = document.createElement("p");
                         is_locked.textContent = 'is_locked: ' + data[i].is_locked;
+                        if (data[i].is_locked) {
+                            is_locked.classList.add("device-locked");
+                        } else {
+                            is_locked.classList.add("device-unlocked");
+                        }
                         card.appendChild(is_locked);
                         const door_lockButton = document.createElement("button")
                         door_lockButton.textContent = "Изменить состояние замка"

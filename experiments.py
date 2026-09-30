@@ -1,3 +1,5 @@
+import database
+
 keys = ["id", "name", "device_type", "is_on"]
 device = (5, "Kitchen Thermostat", "thermostat", False)
 devices = [
@@ -7,12 +9,9 @@ devices = [
 ]
 
 
-def devices_to_dict(devices):
-    result = []
-    for device in devices:
-        dct = dict(zip(keys, device))
-        result.append(dct)
-    return result
+def get_devices():
+    devices = database.get_devices()
+    return devices
 
 
-print(devices_to_dict(devices))
+print(database.lock_device(1))

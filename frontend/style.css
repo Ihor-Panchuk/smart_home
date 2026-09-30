@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f5f5f5;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+h2 {
+    margin-bottom: 20px;
+}
+
+#devices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; 
+}
+#devices > div {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    width: 220px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#devices h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#devices p {
+    margin: 6px 0;
+}
+
+button {
+    padding: 8px 12px;
+    margin: 5px;
+    cursor: pointer;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background-color: #eee;
+}
+
+button:hover {
+    background-color: #ddd;
+}
+
+#devices input {
+    width: 60px;
+    padding: 5px;
+    margin: 5px;
+}
+
+#devices > div {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+#devices > div:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+}
+
+button {
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+}
+button:active {
+    transform: scale(0.97);
+}
+#devices input {
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.device-on {
+    color: green;
+    font-weight: bold;
+}
+.device-off {
+    color: #777;
+}
+.device-locked {
+    color: red;
+    font-weight: bold;
+}
+.device-unlocked {
+    color: green;
+    font-weight: bold;
+}
