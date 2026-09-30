@@ -1,12 +1,15 @@
 const button = document.getElementById("loadButton");
 const devices = document.getElementById("devices");
 
-button.addEventListener('click', function() {
+function loadDevices() {
     devices.textContent = "";
+
     fetch("/devices")
         .then(response => {
-            response.json().then(data => {
-                for (let i = 0; i < data.length; i++) {
+            return response.json();
+        })
+        .then(data => {
+            for (let i = 0; i < data.length; i++) {
                     const card = document.createElement("div");
 
                     if (data[i].device_type === "light") {
@@ -228,6 +231,7 @@ button.addEventListener('click', function() {
                     }
                     devices.appendChild(card);
                 };
-            });
         });
-});
+}
+
+loadDevices();
