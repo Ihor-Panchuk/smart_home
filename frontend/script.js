@@ -2,6 +2,29 @@ const devices = document.getElementById("devices");
 
 const deviceName = document.getElementById("device-name")
 const deviceType = document.getElementById("device-type")
+
+const deviceBrightness = document.getElementById("device-brightness");
+const deviceTemperature = document.getElementById("device-temperature");
+
+const brightnessField = document.getElementById("brightness-field")
+const temperatureField = document.getElementById("temperature-field")
+deviceType.addEventListener("change", function() {
+    if (deviceType.value === "light") {
+        brightnessField.style.display = "block";
+        temperatureField.style.display = "none";
+    }
+    if (deviceType.value === "thermostat") {
+        brightnessField.style.display = "none";
+        temperatureField.style.display = "block";
+    }
+    if (deviceType.value === "door_lock") {
+        brightnessField.style.display = "none";
+        temperatureField.style.display = "none";
+    }
+});
+brightnessField.style.display = "block";
+temperatureField.style.display = "none";
+
 const addDeviceButton = document.getElementById("add-device-button")
 
 const lights = document.getElementById("lights");
@@ -12,6 +35,20 @@ addDeviceButton.addEventListener("click", function() {
     const name = deviceName.value;
     const type = deviceType.value;
 
+    let brightness = null;
+    let temperature = null;
+    let is_locked = null;
+
+    if (type === "light") {
+        brightness = deviceBrightness.value;
+    }
+    if (type === "thermostat") {
+        temperature = deviceTemperature.value;
+    }
+    if (type === "door_lock") {
+        is_locked = false;
+    }
+
     fetch("/devices", {
         method: "POST",
         headers: {
@@ -19,7 +56,10 @@ addDeviceButton.addEventListener("click", function() {
         },
         body: JSON.stringify({
             name: name,
-            device_type: type
+            device_type: type,
+            brightness: brightness,
+            temperature: temperature,
+            is_locked: is_locked
         })
     })
     .then(response => {
