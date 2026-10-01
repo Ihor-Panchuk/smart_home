@@ -1,8 +1,65 @@
-const button = document.getElementById("loadButton");
 const devices = document.getElementById("devices");
 
+const deviceName = document.getElementById("device-name")
+const deviceType = document.getElementById("device-type")
+const addDeviceButton = document.getElementById("add-device-button")
+
+const lights = document.getElementById("lights");
+const thermostats = document.getElementById("thermostats");
+const locks = document.getElementById("locks");
+
+addDeviceButton.addEventListener("click", function() {
+    const name = deviceName.value;
+    const type = deviceType.value;
+
+    fetch("/devices", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            device_type: type
+        })
+    })
+    .then(response => {
+        console.log(response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        loadDevices();
+    });
+});
+
+function getPowerStatus(isOn) {
+    if (isOn) {
+        return "● Включено";
+    } else {
+        return "● Выключено";
+    }
+}
+
+function getBrightnessText(brightness) {
+    return "Яркость: " + brightness + "%"
+}
+
+function getTemperatureText(temperature) {
+    return "Темп: " + temperature + "°C"
+}
+
+function getLockStatus(isLocked) {
+    if (isLocked) {
+        return "🔒 Заблокировано";
+    } else {
+        return "🔓 Разблокировано";
+    }
+}
+
 function loadDevices() {
-    devices.textContent = "";
+    lights.textContent = "";
+    thermostats.textContent = "";
+    locks.textContent = "";
 
     fetch("/devices")
         .then(response => {
@@ -33,7 +90,7 @@ function loadDevices() {
                             })
                             .then(updatedDevice => {
                                 data[i].is_on = updatedDevice.is_on;
-                                is_on.textContent = 'is_on: ' + updatedDevice.is_on;  
+                                is_on.textContent = getPowerStatus(updatedDevice.is_on);  
                                 
                                 is_on.classList.remove("device-on", "device-off");
                                 if (updatedDevice.is_on) {
@@ -66,7 +123,7 @@ function loadDevices() {
                             .then(updatedDevice => {
                                 data[i].is_on = updatedDevice.is_on;
                                 is_on.textContent = 'is_on: ' + updatedDevice.is_on;
-                                is_on.classList.remove("device-on", "device-off");
+                                is_on.textContent = getPowerStatus(updatedDevice.is_on);
 
                                 button.classList.remove("button-on", "button-off");
 
@@ -99,7 +156,7 @@ function loadDevices() {
                     title.textContent = data[i].name;
                     type.textContent = data[i].device_type;
                     id.textContent = 'ID: ' + data[i].id;
-                    is_on.textContent = 'is_on: ' + data[i].is_on;
+                    is_on.textContent = getPowerStatus(data[i].is_on);
                     if (data[i].is_on) {
                         button.textContent = "Выключить";
                     } else {
@@ -149,10 +206,10 @@ function loadDevices() {
                             .then(updatedDevice => {
                                 console.log(updatedDevice);
                                 data[i].brightness = updatedDevice.brightness;
-                                brightness.textContent = 'brightness: ' + updatedDevice.brightness;
+                                brightness.textContent = getBrightnessText(updatedDevice.brightness);
                             })
                         });
-                        brightness.textContent = 'brightness: ' + data[i].brightness;
+                        brightness.textContent = getBrightnessText(data[i].brightness);
                         card.appendChild(brightness);
                         card.appendChild(brightnessButton);
                     }
@@ -182,16 +239,16 @@ function loadDevices() {
                             .then(updatedDevice => {
                                 console.log(updatedDevice);
                                 data[i].temperature = updatedDevice.temperature;
-                                temperature.textContent = "temperature: " + updatedDevice.temperature;
+                                temperature.textContent = getTemperatureText(updatedDevice.temperature);
                             })
                         });
-                        temperature.textContent = 'temperature: ' + data[i].temperature;
+                        temperature.textContent = getTemperatureText(data[i].temperature);
                         card.appendChild(temperature);
                         card.appendChild(temperatureButton);
                     }
                     if (data[i].device_type === 'door_lock') {
                         const is_locked = document.createElement("p");
-                        is_locked.textContent = 'is_locked: ' + data[i].is_locked;
+                        is_locked.textContent = getLockStatus(data[i].is_locked);
                         if (data[i].is_locked) {
                             is_locked.classList.add("device-locked");
                         } else {
@@ -212,7 +269,9 @@ function loadDevices() {
                                 .then(updatedDevice => {
                                     console.log(updatedDevice);
                                     data[i].is_locked = updatedDevice.is_locked;
-                                    is_locked.textContent = 'is_locked: ' + updatedDevice.is_locked;
+                                    is_locked.textContent = getLockStatus(updatedDevice.is_locked);
+                                    is_locked.classList.remove("device-locked");
+                                    is_locked.classList.add("device-unlocked");
                                 })
                             } else {
                                 fetch("/devices/" + data[i].id + "/lock", {
@@ -224,14 +283,42 @@ function loadDevices() {
                                 .then(updatedDevice => {
                                     console.log(updatedDevice);
                                     data[i].is_locked = updatedDevice.is_locked;
-                                    is_locked.textContent = 'is_locked: ' + updatedDevice.is_locked;
+                                    is_locked.textContent = getLockStatus(updatedDevice.is_locked);
+                                    is_locked.classList.remove("device-unlocked");
+                                    is_locked.classList.add("device-locked");
                                 })
                             }
                         })
                     }
-                    devices.appendChild(card);
+                    if (data[i].device_type === "light") {
+                        lights.appendChild(card);
+                    }
+                    if (data[i].device_type === "thermostat") {
+                        thermostats.appendChild(card);
+                    }
+                    if (data[i].device_type === "door_lock") {
+                        locks.appendChild(card);
+                    }
                 };
         });
 }
 
 loadDevices();
+
+const categoryButtons = document.querySelectorAll(".category-button");
+
+categoryButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+        const category = button.parentElement;
+        const content = category.querySelector("div");
+        const arrow = button.querySelector("span");
+
+        if (content.style.display === "none") {
+            content.style.display = "grid";
+            arrow.textContent = "▼";
+        } else {
+            content.style.display = "none";
+            arrow.textContent = "▲";
+        }
+    });
+});

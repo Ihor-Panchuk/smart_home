@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
@@ -11,11 +11,44 @@
 <body>
     <h1>Smart Home</h1>
     <h2>Мои устройства</h2>
-    <button id="loadButton" type="button">Загрузить устройства</button>
+
+    <div id="add-device">
+        <h2>Добавить устройство</h2>
+
+        <input id="device-name" type="text" placeholder="Название">
+
+        <select id="device-type">
+            <option value="light">Освещение</option>
+            <option value="thermostat">Термостат</option>
+            <option value="door_lock">Замок</option>
+        </select>
+
+        <button id="add-device-button">Добавить</button>
+    </div>
+
+    <div id="categories">
+
+        <div class="category">
+            <button class="category-button">💡 Освещение <span>▼</span></button>
+            <div id="lights"></div>
+        </div>
+
+        <div class="category">
+            <button class="category-button">🌡️ Климат <span>▼</span></button>
+            <div id="thermostats"></div>
+        </div>
+
+        <div class="category">
+            <button class="category-button">🔒 Безопасность <span>▼</span></button>
+            <div id="locks"></div>
+        </div>
+
+    </div>
     <div id="devices"></div>
 
     <script src="script.js?v=3"></script>
 
 </body>
+
 
 </html>
