@@ -7,8 +7,8 @@ from fastapi.staticfiles import StaticFiles
 class DeviceData(BaseModel):
     name: str
     device_type: str
-    brightness: int | None = None
-    temperature: int | None = None
+    brightness: int | None = Field(default=None, ge=0, le=100)
+    temperature: int | None = Field(default=None, ge=10, le=30)
     is_on: bool = False
     is_locked: bool | None = None
 

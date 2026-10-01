@@ -35,6 +35,20 @@ addDeviceButton.addEventListener("click", function() {
     const name = deviceName.value;
     const type = deviceType.value;
 
+    if (name.trim() === "") {
+        alert("Введите название устройства");
+        return;
+    }
+
+    if (type === "light" && deviceBrightness.value === "") {
+        alert("Введите яркость");
+        return;
+    }
+    if (type === "thermostat" && deviceTemperature.value === "") {
+        alert("Введите температуру");
+        return;
+    }
+
     let brightness = null;
     let temperature = null;
     let is_locked = null;
@@ -63,13 +77,28 @@ addDeviceButton.addEventListener("click", function() {
         })
     })
     .then(response => {
-        console.log(response.status);
+        if (!response.ok) {
+            return response.json().then(error => {
+                alert(error.detail[0].msg);
+                return null;
+            });
+        }
+
         return response.json();
     })
+
     .then(data => {
-        console.log(data);
-        loadDevices();
-    });
+        if (data === null) {
+            return;
+        }
+
+    console.log(data);
+    loadDevices();
+
+    deviceName.value = "";
+    deviceBrightness.value = "";
+    deviceTemperature.value = "";
+});
 });
 
 function getPowerStatus(isOn) {
@@ -120,6 +149,24 @@ function loadDevices() {
                     }
 
                     const button = document.createElement("button");
+                    const deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Удалить"
+                    deleteButton.addEventListener("click", function() {
+                        if (!confirm("Удалить устройство?")) {
+                            return;
+                        }
+                        fetch("/devices/" + data[i].id, {
+                            method: "DELETE"
+                        })
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(deletedDevice => {
+                            console.log(deletedDevice);
+                            loadDevices();
+                        });
+                    });
+
                     button.addEventListener("click", function() {
                         if (data[i].is_on) {
                             fetch("/devices/" + data[i].id + "/off", {
@@ -220,6 +267,7 @@ function loadDevices() {
                     card.appendChild(id);
                     card.appendChild(is_on);
                     card.appendChild(button);
+                    card.appendChild(deleteButton);
                     if (data[i].device_type === 'light') {
                         const brightness = document.createElement("p");
                         const brightnessInput = document.createElement("input");

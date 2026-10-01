@@ -278,3 +278,33 @@ button:active {
     display: flex;
     flex-direction: column;
 }
+
+#add-device {
+    background-color: #2c2c2e;
+    border: 1px solid #3a3a3c;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+#add-device h2 {
+    margin-top: 0;
+}
+#add-device input,
+#add-device select {
+    background-color: #1c1c1e;
+    color: #f5f5f7;
+    border: 1px solid #48484a;
+    border-radius: 8px;
+    padding: 9px 10px;
+    margin: 5px 0;
+}
+#add-device input:focus,
+#add-device select:focus {
+    outline: none;
+    border-color: #64d2ff;
+}
+#add-device button {
+    margin-top: 10px;
+    background-color: #30d158;
+    color: #000000;
+}
