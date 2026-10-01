@@ -4,6 +4,8 @@ import os
 
 load_dotenv()
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 user = os.getenv("user")
 password = os.getenv("password")
 host = os.getenv("host")
@@ -14,13 +16,7 @@ dbname = os.getenv("dbname")
 
 
 def get_connection():  # подключенние базы данных к питону
-    connection = psycopg.connect(
-        host=host,
-        port=port,
-        dbname=dbname,
-        user=user,
-        password=password
-    )
+    connection = psycopg.connect(DATABASE_URL)
     return connection
 
 
