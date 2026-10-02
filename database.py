@@ -65,7 +65,19 @@ def get_device(device_id):  # функция для возвращенния у�
     return device_to_dict(device)
 
 
+# функция для возвращенния устройста по типу девайса
+def get_devices_by_type(device_type):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT * FROM devices WHERE device_type = %s", (device_type,))
+    devices = cursor.fetchall()
+    close_connection(cursor, connection)
+    return devices_to_dict(devices)
+
 # функция для добавленния новых устройств
+
+
 def add_device(name, device_type, is_on, brightness, temperature, is_locked):
     connection = get_connection()
     cursor = connection.cursor()
