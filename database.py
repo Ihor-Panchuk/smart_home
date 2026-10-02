@@ -75,6 +75,18 @@ def get_devices_by_type(device_type):
     close_connection(cursor, connection)
     return devices_to_dict(devices)
 
+# функция для возвращенния устройста по статусу девайса
+
+
+def get_devices_by_status(is_on):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM devices WHERE is_on = %s", (is_on,))
+    devices = cursor.fetchall()
+    close_connection(cursor, connection)
+    return devices_to_dict(devices)
+
+
 # функция для добавленния новых устройств
 
 

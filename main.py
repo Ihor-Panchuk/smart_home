@@ -56,6 +56,12 @@ def get_device_by_type(device_type: str):
     return devices
 
 
+@app.get("/devices/is_on/{is_on}")
+def get_devices_by_status(is_on: bool):
+    devices = database.get_devices_by_status(is_on)
+    return devices
+
+
 @app.get("/devices/{device_id}/status")
 def device_status(device_id: int):
     device = database.get_device(device_id)
