@@ -308,3 +308,30 @@ button:active {
     background-color: #30d158;
     color: #000000;
 }
+
+#register {
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+#register h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+#register input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+#register button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

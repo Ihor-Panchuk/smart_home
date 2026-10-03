@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, Field
 import database
 from fastapi.staticfiles import StaticFiles
@@ -7,6 +7,9 @@ from pwdlib import PasswordHash
 import os
 import jwt
 from datetime import datetime, timedelta, timezone
+from fastapi.security import OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
@@ -20,6 +23,18 @@ def create_access_token(username):
     token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=ALGORITHM)
 
     return token
+
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
+        return payload["sub"]
+
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Недействительный токен"
+        )
 
 
 password_hash = PasswordHash.recommended()
@@ -276,3 +291,10 @@ def login(user: LoginData):
         "message": "Вход выполнен",
         "access_token": token
     }
+
+# ==============================================================================
+
+
+@app.get("/me")
+def me(current_user: str = Depends(get_current_user)):
+    return {"username": current_user}
