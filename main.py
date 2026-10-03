@@ -3,6 +3,9 @@ from pydantic import BaseModel, Field
 import database
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
+from pwdlib import PasswordHash
+
+password_hash = PasswordHash.recommended()
 
 
 class DeviceData(BaseModel):
@@ -12,6 +15,16 @@ class DeviceData(BaseModel):
     temperature: int | None = Field(default=None, ge=10, le=30)
     is_on: bool = False
     is_locked: bool | None = None
+
+
+class UserData(BaseModel):
+    username: str
+    password: str
+
+
+class LoginData(BaseModel):
+    username: str
+    password: str
 
 
 class NameData(BaseModel):
@@ -212,3 +225,32 @@ def unlock(device_id: int):
     result = database.unlock_device(device_id)
     return result
 # ==============================================================================
+
+# endpoint для регистрации пользователя
+
+
+@app.post("/register")
+def register(user: UserData):
+    print(user.username)
+    hashed_password = password_hash.hash(user.password)
+    created = database.create_user(user.username, hashed_password)
+    if not created:
+        raise HTTPException(
+            status_code=400, detail="Пользователь с таким именем уже существует")
+
+    return {"message": "Пользователь создан"}
+
+# endpoint для входа пользователя
+# проверка логина и пароля
+
+
+@app.post("/login")
+def login(user: LoginData):
+    db_user = database.get_user_by_username(user.username)
+    if db_user is None:
+        raise HTTPException(
+            status_code=401, detail="Неверное имя пользователя или пароль")
+    if not password_hash.verify(user.password, db_user[2]):
+        raise HTTPException(
+            status_code=401, detail="Неверное имя пользователя или пароль")
+    return {"message": "Вход выполнен"}

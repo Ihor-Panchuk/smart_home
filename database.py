@@ -213,3 +213,33 @@ def unlock_device(device_id):
         return None
     return device_to_dict(device)
 # =======================================================================================================================
+
+# функция для регистрации пользователя
+
+
+def create_user(username, password_hash):
+    connection = get_connection()
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO users (username, password_hash) VALUES (%s, %s)",
+            (username, password_hash))
+        connection.commit()
+    except psycopg.errors.UniqueViolation:
+        connection.rollback()
+        return False
+    close_connection(cursor, connection)
+    return True
+
+# функция для входа пользователя
+
+
+def get_user_by_username(username):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+    user = cursor.fetchone()
+    close_connection(cursor, connection)
+    if user is None:
+        return None
+    return user
