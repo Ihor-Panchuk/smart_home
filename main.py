@@ -4,6 +4,23 @@ import database
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from pwdlib import PasswordHash
+import os
+import jwt
+from datetime import datetime, timedelta, timezone
+
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+ALGORITHM = "HS256"
+
+
+def create_access_token(username):
+    payload = {
+        "sub": username
+    }
+
+    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=ALGORITHM)
+
+    return token
+
 
 password_hash = PasswordHash.recommended()
 
@@ -253,4 +270,9 @@ def login(user: LoginData):
     if not password_hash.verify(user.password, db_user[2]):
         raise HTTPException(
             status_code=401, detail="Неверное имя пользователя или пароль")
-    return {"message": "Вход выполнен"}
+    token = create_access_token(user.username)
+
+    return {
+        "message": "Вход выполнен",
+        "access_token": token
+    }
