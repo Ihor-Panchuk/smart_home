@@ -335,3 +335,10 @@ button:active {
     border-radius: 5px;
     cursor: pointer;
 }
+
+.register-success {
+    color: rgb(4, 181, 4);
+}
+.register-error {
+    color: red;
+}

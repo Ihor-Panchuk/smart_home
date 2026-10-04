@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Home</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
@@ -19,6 +19,15 @@
         <input type="password" id="password" placeholder="Пароль">
 
         <button id="registerBtn">Зарегистрироваться</button>
+        <p id="registerMessage"></p>
+    </section>
+
+    <section id="login">
+        <h2>Вход</h2>
+        <input type="text" id="loginUsername" placeholder="Имя пользователя">
+        <input type="password" id="loginPassword" placeholder="Пароль">
+        <button id="loginBtn">Войти</button>
+        <p id="loginMessage"></p>
     </section>
 
     <h2>Мои устройства</h2>
@@ -67,7 +76,7 @@
     </div>
     <div id="devices"></div>
 
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=5"></script>
 
 </body>
 

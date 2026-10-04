@@ -83,7 +83,7 @@ app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 
 @app.get("/devices")
-def get_devices():
+def get_devices(current_user=Depends(get_current_user)):
     return database.get_devices()
 
 

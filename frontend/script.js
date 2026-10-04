@@ -1,13 +1,101 @@
+console.log("script.js запустился");
 const devices = document.getElementById("devices");
 
-const deviceName = document.getElementById("device-name")
-const deviceType = document.getElementById("device-type")
+const deviceName = document.getElementById("device-name");
+const deviceType = document.getElementById("device-type");
 
 const deviceBrightness = document.getElementById("device-brightness");
 const deviceTemperature = document.getElementById("device-temperature");
 
-const brightnessField = document.getElementById("brightness-field")
-const temperatureField = document.getElementById("temperature-field")
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password"); 
+const registerBtn = document.getElementById("registerBtn");
+const registerMessage = document.getElementById("registerMessage");
+
+const loginUsername = document.getElementById("loginUsername")
+const loginPassword = document.getElementById("loginPassword")
+const loginBtn = document.getElementById("loginBtn")
+const loginMessage = document.getElementById("loginMessage")
+
+console.log(registerBtn);
+
+registerBtn.addEventListener("click", function() {
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+
+    console.log(username);
+    console.log(password);
+
+    console.log(JSON.stringify({
+        username: username,
+        password: password
+    }));
+
+    fetch("/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json" 
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+    .then(function(response) {
+        return response.json().then(function(data) {
+            return {
+                ok: response.ok,
+                data: data
+            };
+        });
+    })
+    .then(function(result) {
+        if (result.ok) {
+            registerMessage.textContent = result.data.message;
+            registerMessage.className = "register-success";
+        } else {
+            registerMessage.textContent = result.data.detail;
+            registerMessage.className = "register-error"
+        }
+    });
+});
+
+loginBtn.addEventListener("click", function() {
+    const username = loginUsername.value;
+    const password = loginPassword.value;
+
+    fetch("/login", {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        console.log(data);
+        localStorage.setItem("token", data.access_token);
+    
+        fetch("/me", {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+        });
+    });
+});
+const brightnessField = document.getElementById("brightness-field");
+const temperatureField = document.getElementById("temperature-field");
 deviceType.addEventListener("change", function() {
     if (deviceType.value === "light") {
         brightnessField.style.display = "block";
@@ -130,8 +218,16 @@ function loadDevices() {
     thermostats.textContent = "";
     locks.textContent = "";
 
-    fetch("/devices")
+    fetch("/devices", {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    })
         .then(response => {
+            if (!response.ok) {
+                console.log("Пользователь не авторизован");
+                return;
+            }
             return response.json();
         })
         .then(data => {
