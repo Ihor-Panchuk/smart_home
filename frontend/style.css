@@ -342,3 +342,40 @@ button:active {
 .register-error {
     color: red;
 }
+
+#authStatus {
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+#login {
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+#login h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+#login input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #aaa;
+
+}
+#login button {
+    width: 100px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#authForms {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}

@@ -5,30 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Home</title>
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
     <h1>Smart Home</h1>
+    <div id="authForms">
+        <section id="register">
+            <h2>Регистрация</h2>
 
-    <section id="register">
-        <h2>Регистрация</h2>
+            <input type="text" id="username" placeholder="Имя пользователя">
 
-        <input type="text" id="username" placeholder="Имя пользователя">
+            <input type="password" id="password" placeholder="Пароль">
 
-        <input type="password" id="password" placeholder="Пароль">
+            <button id="registerBtn">Зарегистрироваться</button>
+            <p id="registerMessage"></p>
+        </section>
 
-        <button id="registerBtn">Зарегистрироваться</button>
-        <p id="registerMessage"></p>
-    </section>
-
-    <section id="login">
-        <h2>Вход</h2>
-        <input type="text" id="loginUsername" placeholder="Имя пользователя">
-        <input type="password" id="loginPassword" placeholder="Пароль">
-        <button id="loginBtn">Войти</button>
-        <p id="loginMessage"></p>
-    </section>
+        <section id="login">
+            <h2>Вход</h2>
+            <input type="text" id="loginUsername" placeholder="Имя пользователя">
+            <input type="password" id="loginPassword" placeholder="Пароль">
+            <button id="loginBtn">Войти</button>
+            <p id="loginMessage"></p>
+        </section>
+    </div>
+    <p id="authStatus"></p>
+    <button id="logoutBtn">Выйти</button>
 
     <h2>Мои устройства</h2>
 
@@ -76,7 +79,7 @@
     </div>
     <div id="devices"></div>
 
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=8"></script>
 
 </body>
 

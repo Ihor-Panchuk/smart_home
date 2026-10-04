@@ -17,6 +17,9 @@ const loginPassword = document.getElementById("loginPassword")
 const loginBtn = document.getElementById("loginBtn")
 const loginMessage = document.getElementById("loginMessage")
 
+const authStatus = document.getElementById("authStatus");
+const logoutBtn = document.getElementById("logoutBtn");
+
 console.log(registerBtn);
 
 registerBtn.addEventListener("click", function() {
@@ -80,6 +83,8 @@ loginBtn.addEventListener("click", function() {
     .then(function(data) {
         console.log(data);
         localStorage.setItem("token", data.access_token);
+        authStatus.textContent = "Вы вошли в систему!";
+        loadDevices();
     
         fetch("/me", {
             headers: {
@@ -487,7 +492,10 @@ function loadDevices() {
         });
 }
 
-loadDevices();
+if (localStorage.getItem("token")) {
+    authStatus.textContent = "Вы вошли!";
+    loadDevices();
+}
 
 const categoryButtons = document.querySelectorAll(".category-button");
 
@@ -506,3 +514,13 @@ categoryButtons.forEach(function(button) {
         }
     });
 });
+
+logoutBtn.addEventListener("click", function() {
+    localStorage.removeItem("token");
+
+    authStatus.textContent = "Вы вышли из системы.";
+
+    lights.textContent = "";
+    thermostats.textContent = "";
+    locks.textContent = "";
+})
