@@ -84,6 +84,7 @@ loginBtn.addEventListener("click", function() {
         console.log(data);
         localStorage.setItem("token", data.access_token);
         authStatus.textContent = "Вы вошли в систему!";
+        authStatus.className = "register-success";
         loadDevices();
     
         fetch("/me", {
@@ -370,13 +371,17 @@ function loadDevices() {
                     card.appendChild(button);
                     card.appendChild(deleteButton);
                     if (data[i].device_type === 'light') {
+                        const brightnessControl = document.createElement("div");
+                        brightnessControl.classList.add("device-control");
                         const brightness = document.createElement("p");
+                        const brightnessRow = document.createElement("div");
+                        brightnessRow.classList.add("device-control-row");
                         const brightnessInput = document.createElement("input");
                         brightnessInput.type = "number";
                         brightnessInput.min = 0;
                         brightnessInput.max = 100;
                         brightnessInput.value = data[i].brightness;
-                        card.appendChild(brightnessInput);
+                        brightnessRow.appendChild(brightnessInput);
                         const brightnessButton = document.createElement("button");
                         brightnessButton.textContent = "Изменить яркость";
                         brightnessButton.addEventListener("click", function() {
@@ -399,17 +404,23 @@ function loadDevices() {
                             })
                         });
                         brightness.textContent = getBrightnessText(data[i].brightness);
-                        card.appendChild(brightness);
-                        card.appendChild(brightnessButton);
+                        brightnessControl.appendChild(brightness);
+                        brightnessRow.appendChild(brightnessButton);
+                        brightnessControl.appendChild(brightnessRow);
+                        card.appendChild(brightnessControl);
                     }
                     if (data[i].device_type === 'thermostat') {
+                        const temperatureControl = document.createElement("div");
+                        temperatureControl.classList.add("device-control");
                         const temperature = document.createElement("p");
+                        const temperatureRow = document.createElement("div");
+                        temperatureRow.classList.add("device-control-row");
                         const temperatureInput = document.createElement("input")
                         temperatureInput.type = "number"
                         temperatureInput.min = 10;
                         temperatureInput.max = 30;
                         temperatureInput.value = data[i].temperature;
-                        card.appendChild(temperatureInput);
+                        temperatureRow.appendChild(temperatureInput);
                         const temperatureButton = document.createElement("button");
                         temperatureButton.textContent = "Изменить температуру";
                         temperatureButton.addEventListener("click", function() {
@@ -432,8 +443,10 @@ function loadDevices() {
                             })
                         });
                         temperature.textContent = getTemperatureText(data[i].temperature);
-                        card.appendChild(temperature);
-                        card.appendChild(temperatureButton);
+                        temperatureControl.appendChild(temperature);
+                        temperatureRow.appendChild(temperatureButton);
+                        temperatureControl.appendChild(temperatureRow);
+                        card.appendChild(temperatureControl);
                     }
                     if (data[i].device_type === 'door_lock') {
                         const is_locked = document.createElement("p");
@@ -494,6 +507,7 @@ function loadDevices() {
 
 if (localStorage.getItem("token")) {
     authStatus.textContent = "Вы вошли!";
+    authStatus.className = "register-success";
     loadDevices();
 }
 
@@ -505,11 +519,11 @@ categoryButtons.forEach(function(button) {
         const content = category.querySelector("div");
         const arrow = button.querySelector("span");
 
-        if (content.style.display === "none") {
-            content.style.display = "grid";
+        if (content.style.maxHeight === "0px") {
+            content.style.maxHeight = "1000px";
             arrow.textContent = "▼";
         } else {
-            content.style.display = "none";
+            content.style.maxHeight = "0px";
             arrow.textContent = "▲";
         }
     });
@@ -519,6 +533,7 @@ logoutBtn.addEventListener("click", function() {
     localStorage.removeItem("token");
 
     authStatus.textContent = "Вы вышли из системы.";
+    authStatus.className = "register-error";
 
     lights.textContent = "";
     thermostats.textContent = "";

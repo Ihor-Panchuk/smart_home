@@ -48,6 +48,28 @@ h2 {
     margin-bottom: 20px;
 }
 
+/* Общие стили всех кнопок */
+button {
+    padding: 9px 14px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.15s, opacity 0.15s;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+button:active {
+    transform: scale(0.96);
+}
+/*------------------------- */
+
+/* Карточки устройств */
 #devices {
     display: flex;
     flex-wrap: wrap;
@@ -56,10 +78,12 @@ h2 {
 #devices > div {
     background-color: #2c2c2e;
     border: 1px solid #3a3a3c;
-    border-radius: 12px;
-    padding: 18px;
+    border-radius: 14px;
+    padding: 20px;
     width: 220px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 #devices h3 {
@@ -71,48 +95,31 @@ h2 {
     margin: 6px 0;
 }
 
-button {
-    padding: 8px 14px;
-    margin: 5px;
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-    background-color: #e8e8e8;
-    font-size: 14px;
-    font-weight: bold;
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-button:hover {
-    background-color: #ddd;
-}
-
-#devices input {
-    width: 60px;
-    padding: 5px;
-    margin: 5px;
-}
-
-#devices > div {
-    transition: transform 0.2s, box-shadow 0.2s;
-}
 #devices > div:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
 }
 
-button {
-    font-size: 14px;
-    font-weight: bold;
-    transition: background-color 0.2s, transform 0.1s;
-}
-button:active {
-    transform: scale(0.97);
-}
 #devices input {
-    font-size: 14px;
+    width: 70px;
     box-sizing: border-box;
+    margin: 5px 0;
+    padding: 8px 10px;
+    background-color: #1c1c1e;
+    color: #f5f5f7;
+    border: 1px solid #48484a;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
+
+#devices input:focus {
+    outline: none;
+    border-color: #64d2ff;
+    box-shadow: 0 0 0 2px rgba(100, 210, 255, 0.15);
+}
+
 .device-on {
     color: green;
     font-weight: bold;
@@ -127,16 +134,6 @@ button:active {
 .device-unlocked {
     color: green;
     font-weight: bold;
-}
-
-.button-on {
-    background-color: #d4edda;
-    color: #155724
-}
-
-.button-off {
-    background-color: #f8d7da;
-    color: #721c24;
 }
 
 h1, h2 {
@@ -159,22 +156,7 @@ h1, h2 {
     border-top: 4px solid #64d2ff !important;
 }
 
-button {
-    border: none;
-    border-radius: 8px;
-    pad: 9px 14px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.15s, opacity 0.15s;
-}
-
-button:hover {
-    opacity: 0.85;
-}
-button:active {
-    transform: scale(0.96);
-}
+/* Кнопки состояния устройств */
 .button-on {
     background-color: #30d158;
     color: #000000;
@@ -183,19 +165,7 @@ button:active {
     background-color: #ff453a;
     color: #ffffff;
 }
-
-#devices input {
-    background-color: #1c1c1e;
-    color: #f5f5f7;
-    border: 1px solid #48484a;
-    border-radius: 7px;
-    padding: 7px;
-}
-
-#devices input:focus {
-    outline: none;
-    border-color: #0a84ff;
-}
+/* ------------------------- */
 
 #categories {
     display: flex;
@@ -213,7 +183,7 @@ button:active {
 }
 
 .category:hover {
-    transform: translate(-3px);
+    transform: translateY(-3px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
@@ -246,24 +216,32 @@ button:active {
     background-color: #3a3a3c;
 }
 
+/* Сетка устройств внутри категории */
 .category > div {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 15px;
     margin-top: 15px;
+
+    max-height: 1000px;
+    overflow: hidden;
+
+    transition: max-height 0.8s ease, opacity 0.8s ease;
 }
-.category > div {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-}
+
 .category > div > div {
     width: auto;
+    background-color: #1c1c1e;
+    border: 1px solid #3a3a3c;
+    border-radius: 12px;
+    padding: 16px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .card-light,
 .card-thermostat,
-.card-thermostat {
+.card-door {
     min-height: 220px;
     box-sizing: border-box;
 }
@@ -313,8 +291,10 @@ button:active {
     width: 300px;
     margin: 20px auto;
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+    background-color: #2c2c2e;
+    border: 1px solid #3a3a3c;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 #register h2 {
     text-align: center;
@@ -325,8 +305,10 @@ button:active {
     box-sizing: border-box;
     margin-bottom: 10px;
     padding: 10px;
-    border: 1px solid #aaa;
-    border-radius: 5px;
+    background-color: #1c1c1e;
+    color: #f5f5f7;
+    border: 1px solid #48484a;
+    border-radius: 8px;
 }
 #register button {
     width: 100%;
@@ -334,6 +316,7 @@ button:active {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0;
 }
 
 .register-success {
@@ -352,8 +335,10 @@ button:active {
     width: 300px;
     margin: 20px auto;
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+    background-color: #2c2c2e;
+    border: 1px solid #3a3a3c;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 #login h2 {
     text-align: center;
@@ -364,18 +349,106 @@ button:active {
     box-sizing: border-box;
     margin-bottom: 10px;
     padding: 10px;
-    border: 1px solid #aaa;
-
+    background-color: #1c1c1e;
+    color: #f5f5f7;
+    border: 1px solid #48484a;
+    border-radius: 8px;
 }
 #login button {
-    width: 100px;
+    width: 100%;
     padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0;
 }
 #authForms {
     display: flex;
     justify-content: center;
     gap: 30px;
+}
+
+#authPanel {
+    width: 300px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#logoutBtn {
+    width: 300px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.app-title {
+    text-align: center;
+    margin-bottom: 5px;
+}
+.app-subtitle {
+    text-align: center;
+    color: #777;
+    margin-top: 0;
+}
+
+.devices-header {
+    text-align: center;
+    margin: 30px 0 20px;
+}
+.devices-header h2 {
+    margin-bottom: 5px;
+}
+.devices-header p {
+    margin-top: 0;
+    color: #777;
+}
+
+.device-control {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #242426;
+    border: 1px solid #3a3a3c;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+.device-control p {
+    margin: 0 0 8px;
+    color: #a1a1a6;
+}
+.device-control input {
+    width: 70px;
+    box-sizing: border-box;
+    margin: 0 10px 0 0;
+    padding: 8px 10px;
+
+    background-color: #1c1c1e;
+    color: #f5f5f7;
+
+    border: 1px solid #48484a;
+    border-radius: 8px;
+
+    font-size: 14px;
+    text-align: center;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.device-control input:focus {
+    outline: none;
+    border-color: #64d2ff;
+    box-shadow: 0 0 0 2px rgba(100, 210, 255, 0.15);
+}
+.device-control button {
+    margin: 0;
+    background-color: #3a3a3c;
+    color: #f5f5f7;
+}
+.device-control-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }

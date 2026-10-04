@@ -9,7 +9,8 @@
 </head>
 
 <body>
-    <h1>Smart Home</h1>
+    <h1 class="app-title">Smart Home</h1>
+    <p class="app-subtitle">Управление умным домом</p>
     <div id="authForms">
         <section id="register">
             <h2>Регистрация</h2>
@@ -30,10 +31,15 @@
             <p id="loginMessage"></p>
         </section>
     </div>
-    <p id="authStatus"></p>
-    <button id="logoutBtn">Выйти</button>
+    <div id="authPanel">
+        <p id="authStatus"></p>
+        <button id="logoutBtn">Выйти</button>
+    </div>
 
-    <h2>Мои устройства</h2>
+    <div class="devices-header">
+        <h2>Мои устройства</h2>
+        <p>Управление устройствами вашего дома</p>
+    </div>
 
     <div id="add-device">
         <h2>Добавить устройство</h2>
@@ -79,7 +85,7 @@
     </div>
     <div id="devices"></div>
 
-    <script src="script.js?v=8"></script>
+    <script src="script.js?v=9"></script>
 
 </body>
 
