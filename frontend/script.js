@@ -18,6 +18,7 @@ const loginBtn = document.getElementById("loginBtn")
 const loginMessage = document.getElementById("loginMessage")
 
 const authStatus = document.getElementById("authStatus");
+const usernameStatus = document.getElementById("usernameStatus");
 const logoutBtn = document.getElementById("logoutBtn");
 
 console.log(registerBtn);
@@ -96,7 +97,7 @@ loginBtn.addEventListener("click", function() {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
+            usernameStatus.textContent = "👤 " + data.username;
         });
     });
 });
@@ -509,6 +510,18 @@ if (localStorage.getItem("token")) {
     authStatus.textContent = "Вы вошли!";
     authStatus.className = "register-success";
     loadDevices();
+
+    fetch("/me", {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        usernameStatus.textContent = "👤 " + data.username;
+    });
 }
 
 const categoryButtons = document.querySelectorAll(".category-button");
