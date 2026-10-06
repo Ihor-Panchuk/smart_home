@@ -1,6 +1,4 @@
 console.log("script.js запустился");
-const devices = document.getElementById("devices");
-devices.style.display = "none";
 
 const deviceName = document.getElementById("device-name");
 const deviceType = document.getElementById("device-type");
@@ -22,19 +20,10 @@ const authStatus = document.getElementById("authStatus");
 const usernameStatus = document.getElementById("usernameStatus");
 const logoutBtn = document.getElementById("logoutBtn");
 
-console.log(registerBtn);
 
 registerBtn.addEventListener("click", function() {
     const username = usernameInput.value;
     const password = passwordInput.value;
-
-    console.log(username);
-    console.log(password);
-
-    console.log(JSON.stringify({
-        username: username,
-        password: password
-    }));
 
     fetch("/register", {
         method: "POST",
@@ -88,12 +77,10 @@ loginBtn.addEventListener("click", function() {
         return response.json();
     })
     .then(function(data) {
-        console.log(data);
         localStorage.setItem("token", data.access_token);
         authStatus.textContent = "Вы вошли в систему!";
         authStatus.className = "register-success";
         loadDevices();
-        devices.style.display = "block";
     
         fetch("/me", {
             headers: {
@@ -199,7 +186,6 @@ addDeviceButton.addEventListener("click", function() {
             return;
         }
 
-    console.log(data);
     loadDevices();
 
     deviceName.value = "";
@@ -244,7 +230,6 @@ function loadDevices() {
     })
         .then(response => {
             if (!response.ok) {
-                console.log("Пользователь не авторизован");
                 return;
             }
             return response.json();
@@ -277,7 +262,6 @@ function loadDevices() {
                             return response.json();
                         })
                         .then(deletedDevice => {
-                            console.log(deletedDevice);
                             loadDevices();
                         });
                     });
@@ -346,7 +330,6 @@ function loadDevices() {
                                 } else {
                                     button.textContent = "Включить"
                                 }
-                                console.log(updatedDevice);
                             });
                         }
                     });
@@ -374,8 +357,6 @@ function loadDevices() {
                     } else {
                         button.classList.add("button-off");
                     }
-
-                    console.log(button.className);
 
                     card.appendChild(title);
                     card.appendChild(type);
@@ -411,7 +392,6 @@ function loadDevices() {
                                 return response.json();
                             })
                             .then(updatedDevice => {
-                                console.log(updatedDevice);
                                 data[i].brightness = updatedDevice.brightness;
                                 brightness.textContent = getBrightnessText(updatedDevice.brightness);
                             })
@@ -450,7 +430,6 @@ function loadDevices() {
                                 return response.json();
                             })
                             .then(updatedDevice => {
-                                console.log(updatedDevice);
                                 data[i].temperature = updatedDevice.temperature;
                                 temperature.textContent = getTemperatureText(updatedDevice.temperature);
                             })
@@ -482,7 +461,6 @@ function loadDevices() {
                                     return response.json();
                                 })
                                 .then(updatedDevice => {
-                                    console.log(updatedDevice);
                                     data[i].is_locked = updatedDevice.is_locked;
                                     is_locked.textContent = getLockStatus(updatedDevice.is_locked);
                                     is_locked.classList.remove("device-locked");
@@ -496,7 +474,6 @@ function loadDevices() {
                                     return response.json()
                                 })
                                 .then(updatedDevice => {
-                                    console.log(updatedDevice);
                                     data[i].is_locked = updatedDevice.is_locked;
                                     is_locked.textContent = getLockStatus(updatedDevice.is_locked);
                                     is_locked.classList.remove("device-unlocked");
@@ -522,7 +499,6 @@ if (localStorage.getItem("token")) {
     authStatus.textContent = "Вы вошли!";
     authStatus.className = "register-success";
     loadDevices();
-    devices.style.display = "block";
 
     loginUsername.value = "";
     loginPassword.value = "";

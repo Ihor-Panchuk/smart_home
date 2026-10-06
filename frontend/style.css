@@ -69,57 +69,6 @@ button:active {
 }
 /*------------------------- */
 
-/* Карточки устройств */
-#devices {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px; 
-}
-#devices > div {
-    background-color: #2c2c2e;
-    border: 1px solid #3a3a3c;
-    border-radius: 14px;
-    padding: 20px;
-    width: 220px;
-    box-sizing: border-box;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-#devices h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-#devices p {
-    margin: 6px 0;
-}
-
-#devices > div:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
-}
-
-#devices input {
-    width: 70px;
-    box-sizing: border-box;
-    margin: 5px 0;
-    padding: 8px 10px;
-    background-color: #1c1c1e;
-    color: #f5f5f7;
-    border: 1px solid #48484a;
-    border-radius: 8px;
-    font-size: 14px;
-    text-align: center;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-#devices input:focus {
-    outline: none;
-    border-color: #64d2ff;
-    box-shadow: 0 0 0 2px rgba(100, 210, 255, 0.15);
-}
-
 .device-on {
     color: green;
     font-weight: bold;
@@ -246,17 +195,14 @@ h1, h2 {
 .card-door {
     min-height: 220px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
+
 .card-light h3,
 .card-thermostat h3,
 .card-door h3 {
     min-height: 48px;
-}
-.card-light,
-.card-thermostat,
-.card-door {
-    display: flex;
-    flex-direction: column;
 }
 
 #add-device {
@@ -546,8 +492,5 @@ h1, h2 {
     .card-thermostat h3,
     .card-door h3 {
     overflow-wrap: anywhere;
-    }
-    .category > div {
-    max-height: none !important;
     }
 }
