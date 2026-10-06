@@ -1,5 +1,6 @@
 console.log("script.js запустился");
 const devices = document.getElementById("devices");
+devices.style.display = "none";
 
 const deviceName = document.getElementById("device-name");
 const deviceType = document.getElementById("device-type");
@@ -57,6 +58,8 @@ registerBtn.addEventListener("click", function() {
         if (result.ok) {
             registerMessage.textContent = result.data.message;
             registerMessage.className = "register-success";
+            usernameInput.value = "";
+            passwordInput.value = "";
         } else {
             registerMessage.textContent = result.data.detail;
             registerMessage.className = "register-error"
@@ -67,6 +70,9 @@ registerBtn.addEventListener("click", function() {
 loginBtn.addEventListener("click", function() {
     const username = loginUsername.value;
     const password = loginPassword.value;
+
+    loginUsername.value = "";
+    loginPassword.value = "";
 
     fetch("/login", {
         method: "POST",
@@ -87,6 +93,7 @@ loginBtn.addEventListener("click", function() {
         authStatus.textContent = "Вы вошли в систему!";
         authStatus.className = "register-success";
         loadDevices();
+        devices.style.display = "block";
     
         fetch("/me", {
             headers: {
@@ -94,6 +101,11 @@ loginBtn.addEventListener("click", function() {
             }
         })
         .then(function(response) {
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                location.reload();
+                return;
+            }
             return response.json();
         })
         .then(function(data) {
@@ -384,7 +396,7 @@ function loadDevices() {
                         brightnessInput.value = data[i].brightness;
                         brightnessRow.appendChild(brightnessInput);
                         const brightnessButton = document.createElement("button");
-                        brightnessButton.textContent = "Изменить яркость";
+                        brightnessButton.textContent = "Применить";
                         brightnessButton.addEventListener("click", function() {
                             fetch("/devices/" + data[i].id + "/brightness", {
                                 method: "PUT",
@@ -423,7 +435,7 @@ function loadDevices() {
                         temperatureInput.value = data[i].temperature;
                         temperatureRow.appendChild(temperatureInput);
                         const temperatureButton = document.createElement("button");
-                        temperatureButton.textContent = "Изменить температуру";
+                        temperatureButton.textContent = "Применить";
                         temperatureButton.addEventListener("click", function() {
                             fetch("/devices/" + data[i].id + "/temperature", {
                                 method: "PUT",
@@ -510,6 +522,10 @@ if (localStorage.getItem("token")) {
     authStatus.textContent = "Вы вошли!";
     authStatus.className = "register-success";
     loadDevices();
+    devices.style.display = "block";
+
+    loginUsername.value = "";
+    loginPassword.value = "";
 
     fetch("/me", {
         headers: {
@@ -517,6 +533,11 @@ if (localStorage.getItem("token")) {
         }
     })
     .then(function(response) {
+        if (response.status === 401) {
+            localStorage.removeItem("token");
+            location.reload();
+            return;
+        }
         return response.json();
     })
     .then(function(data) {
@@ -532,13 +553,21 @@ categoryButtons.forEach(function(button) {
         const content = category.querySelector("div");
         const arrow = button.querySelector("span");
 
-        if (content.style.maxHeight === "0px") {
-            content.style.maxHeight = "1000px";
-            arrow.textContent = "▼";
-        } else {
-            content.style.maxHeight = "0px";
-            arrow.textContent = "▲";
-        }
+        if (window.innerWidth <= 600) {
+    if (content.classList.contains("mobile-closed")) {
+        content.classList.remove("mobile-closed");
+        arrow.textContent = "▼";
+    } else {
+        content.classList.add("mobile-closed");
+        arrow.textContent = "▲";
+    }
+} else if (content.style.maxHeight === "0px") {
+    content.style.maxHeight = content.scrollHeight + "px";
+    arrow.textContent = "▼";
+} else {
+    content.style.maxHeight = "0px";
+    arrow.textContent = "▲";
+}
     });
 });
 
