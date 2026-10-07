@@ -44,10 +44,10 @@ def device_to_dict(device):
 # =========================================================
 
 
-def get_devices():  # функция для возвращенния устройств(всех или нескольких)
+def get_devices(user_id):  # функция для возвращенния устройств(всех или нескольких)
     connection = get_connection()
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM devices;")
+    cursor.execute("SELECT * FROM devices WHERE user_id = %s", (user_id,))
     devices = cursor.fetchall()
     close_connection(cursor, connection)
     # превращаем результат запроса из SQL в список словарей
@@ -90,11 +90,11 @@ def get_devices_by_status(is_on):
 # функция для добавленния новых устройств
 
 
-def add_device(name, device_type, is_on, brightness, temperature, is_locked):
+def add_device(name, device_type, is_on, brightness, temperature, is_locked, user_id):
     connection = get_connection()
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO devices (name, device_type, is_on, brightness, temperature, is_locked) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id, name, device_type, is_on, brightness, temperature, is_locked",
-                   (name, device_type, is_on, brightness, temperature, is_locked))
+    cursor.execute("INSERT INTO devices (name, device_type, is_on, brightness, temperature, is_locked, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id, name, device_type, is_on, brightness, temperature, is_locked, user_id",
+                   (name, device_type, is_on, brightness, temperature, is_locked, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)

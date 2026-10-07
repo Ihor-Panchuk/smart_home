@@ -15,9 +15,10 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
 
 
-def create_access_token(username):
+def create_access_token(user_id, username):
     payload = {
-        "sub": username
+        "sub": username,
+        "user_id": user_id
     }
 
     token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=ALGORITHM)
@@ -28,7 +29,10 @@ def create_access_token(username):
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
-        return payload["sub"]
+        return {
+            "username": payload["sub"],
+            "user_id": payload["user_id"]
+        }
 
     except jwt.InvalidTokenError:
         raise HTTPException(
@@ -84,7 +88,7 @@ app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 @app.get("/devices")
 def get_devices(current_user=Depends(get_current_user)):
-    return database.get_devices()
+    return database.get_devices(current_user["user_id"])
 
 
 @app.get("/devices/{device_id}")
@@ -145,7 +149,7 @@ def del_device(device_id: int):
 
 
 @app.post("/devices")
-def add_device(data: DeviceData):
+def add_device(data: DeviceData, current_user=Depends(get_current_user)):
     if data.device_type == "light" and data.temperature is not None:
         raise HTTPException(
             status_code=400, detail="Девайсы класа light не имеют параметра temperature")
@@ -167,7 +171,7 @@ def add_device(data: DeviceData):
             status_code=400, detail="Параметр is_locked имеют только девайсы класса door_lock")
 
     device = database.add_device(
-        data.name, data.device_type, data.is_on, data.brightness, data.temperature, data.is_locked)
+        data.name, data.device_type, data.is_on, data.brightness, data.temperature, data.is_locked, current_user["user_id"])
     return device
 
 # редактирование устройства
@@ -285,7 +289,7 @@ def login(user: LoginData):
     if not password_hash.verify(user.password, db_user[2]):
         raise HTTPException(
             status_code=401, detail="Неверное имя пользователя или пароль")
-    token = create_access_token(user.username)
+    token = create_access_token(db_user[0], user.username)
 
     return {
         "message": "Вход выполнен",
@@ -297,4 +301,4 @@ def login(user: LoginData):
 
 @app.get("/me")
 def me(current_user: str = Depends(get_current_user)):
-    return {"username": current_user}
+    return {"username": current_user["username"]}
