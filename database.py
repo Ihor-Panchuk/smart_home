@@ -54,10 +54,11 @@ def get_devices(user_id):  # функция для возвращенния ус
     return devices_to_dict(devices)
 
 
-def get_device(device_id):  # функция для возвращенния устройста (одного)
+def get_device(device_id, user_id):  # функция для возвращенния устройста (одного)
     connection = get_connection()
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM devices WHERE id = %s", (device_id,))
+    cursor.execute(
+        "SELECT * FROM devices WHERE id = %s AND user_id = %s", (device_id, user_id))
     device = cursor.fetchone()
     close_connection(cursor, connection)
     if device is None:
@@ -101,11 +102,11 @@ def add_device(name, device_type, is_on, brightness, temperature, is_locked, use
     return device_to_dict(device)
 
 
-def delete_device(device_id):  # функция для удаленния устройства
+def delete_device(device_id, user_id):  # функция для удаленния устройства
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "DELETE FROM devices WHERE id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id,))
+        "DELETE FROM devices WHERE id = %s AND user_id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)
@@ -128,11 +129,11 @@ def update_device_name(device_id, new_name):
     return device_to_dict(device)
 
 
-def turn_on_device(device_id):    # функция для включенния устройства
+def turn_on_device(device_id, user_id):    # функция для включенния устройства
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "UPDATE devices SET is_on = TRUE WHERE id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id,))
+        "UPDATE devices SET is_on = TRUE WHERE id = %s AND user_id = %s  RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)
@@ -141,11 +142,11 @@ def turn_on_device(device_id):    # функция для включенния �
     return device_to_dict(device)
 
 
-def turn_off_device(device_id):  # функция для выключенния устройства
+def turn_off_device(device_id, user_id):  # функция для выключенния устройства
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "UPDATE devices SET is_on = FALSE WHERE id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id,))
+        "UPDATE devices SET is_on = FALSE WHERE id = %s AND user_id = %s  RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)
@@ -186,11 +187,11 @@ def update_temperature(device_id, temperature):
 # функция для закрытия замка
 
 
-def lock_device(device_id):
+def lock_device(device_id, user_id):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "UPDATE devices SET is_locked = TRUE WHERE id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id,))
+        "UPDATE devices SET is_locked = TRUE WHERE id = %s AND user_id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)
@@ -201,11 +202,11 @@ def lock_device(device_id):
 # функция для открытия замка
 
 
-def unlock_device(device_id):
+def unlock_device(device_id, user_id):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "UPDATE devices SET is_locked = FALSE WHERE id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id,))
+        "UPDATE devices SET is_locked = FALSE WHERE id = %s AND user_id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (device_id, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)

@@ -270,7 +270,10 @@ function loadDevices() {
                     button.addEventListener("click", function() {
                         if (data[i].is_on) {
                             fetch("/devices/" + data[i].id + "/off", {
-                                method: "PUT"
+                                method: "PUT", 
+                                headers: {
+                                    "Authorization": "Bearer " + localStorage.getItem("token")
+                                }
                             })
                             .then(response => {
                                 return response.json();
@@ -302,7 +305,10 @@ function loadDevices() {
                             })
                         } else {
                             fetch("/devices/" + data[i].id + "/on", {
-                                method: "PUT"
+                                method: "PUT",
+                                headers: {
+                                    "Authorization": "Bearer " + localStorage.getItem("token")
+                                }
                                 })
                                 .then(response => {
                                     return response.json();
@@ -383,7 +389,8 @@ function loadDevices() {
                             fetch("/devices/" + data[i].id + "/brightness", {
                                 method: "PUT",
                                 headers: {
-                                    "Content-Type": "application/json"
+                                    "Content-Type": "application/json",
+                                    "Authorization": "Bearer " + localStorage.getItem("token")
                                 },
                                 body: JSON.stringify({
                                     brightness: brightnessInput.value
@@ -421,7 +428,8 @@ function loadDevices() {
                             fetch("/devices/" + data[i].id + "/temperature", {
                                 method: "PUT",
                                 headers: {
-                                    "Content-type": "application/json"
+                                    "Content-type": "application/json",
+                                    "Authorization": "Bearer " + localStorage.getItem("token")
                                 },
                                 body: JSON.stringify({
                                     temperature: temperatureInput.value
@@ -456,7 +464,10 @@ function loadDevices() {
                         door_lockButton.addEventListener("click", function() {
                             if (data[i].is_locked) {
                                 fetch("/devices/" + data[i].id + "/unlock", {
-                                    method: "PUT"
+                                    method: "PUT", 
+                                    headers: {
+                                        "Authorization": "Bearer " + localStorage.getItem("token")
+                                    }
                                 })
                                 .then(response => {
                                     return response.json();
@@ -469,7 +480,10 @@ function loadDevices() {
                                 })
                             } else {
                                 fetch("/devices/" + data[i].id + "/lock", {
-                                    method: "PUT"
+                                    method: "PUT",
+                                    headers: {
+                                        "Authorization": "Bearer " + localStorage.getItem("token")
+                                    }
                                 })
                                 .then(response => {
                                     return response.json()

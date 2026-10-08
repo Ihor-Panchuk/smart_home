@@ -92,8 +92,8 @@ def get_devices(current_user=Depends(get_current_user)):
 
 
 @app.get("/devices/{device_id}")
-def get_device(device_id: int):
-    device = database.get_device(device_id)
+def get_device(device_id: int, current_user=Depends(get_current_user)):
+    device = database.get_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     return device
@@ -112,8 +112,8 @@ def get_devices_by_status(is_on: bool):
 
 
 @app.get("/devices/{device_id}/status")
-def device_status(device_id: int):
-    device = database.get_device(device_id)
+def device_status(device_id: int, current_user=Depends(get_current_user)):
+    device = database.get_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     if device["device_type"] == "light":
@@ -139,8 +139,8 @@ def device_status(device_id: int):
 
 
 @app.delete("/devices/{device_id}")
-def del_device(device_id: int):
-    device = database.delete_device(device_id)
+def del_device(device_id: int, current_user=Depends(get_current_user)):
+    device = database.delete_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     return device
@@ -188,16 +188,16 @@ def change_device(device_id: int, data: NameData):
 
 
 @app.put("/devices/{device_id}/on")
-def turn_on(device_id: int):
-    device = database.turn_on_device(device_id)
+def turn_on(device_id: int, current_user=Depends(get_current_user)):
+    device = database.turn_on_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     return device
 
 
 @app.put("/devices/{device_id}/off")
-def turn_off(device_id: int):
-    device = database.turn_off_device(device_id)
+def turn_off(device_id: int, current_user=Depends(get_current_user)):
+    device = database.turn_off_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     return device
@@ -208,8 +208,8 @@ def turn_off(device_id: int):
 
 
 @app.put("/devices/{device_id}/brightness")
-def change_brightness(device_id: int, data: BrightnessData):
-    device = database.get_device(device_id)
+def change_brightness(device_id: int, data: BrightnessData, current_user=Depends(get_current_user)):
+    device = database.get_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     if device["device_type"] != "light":
@@ -221,8 +221,8 @@ def change_brightness(device_id: int, data: BrightnessData):
 
 # температура
 @app.put("/devices/{device_id}/temperature")
-def change_temperature(device_id: int, data: TemperatureData):
-    device = database.get_device(device_id)
+def change_temperature(device_id: int, data: TemperatureData, current_user=Depends(get_current_user)):
+    device = database.get_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     if device["device_type"] != "thermostat":
@@ -237,28 +237,28 @@ def change_temperature(device_id: int, data: TemperatureData):
 
 
 @app.put("/devices/{device_id}/lock")
-def lock(device_id: int):
-    device = database.get_device(device_id)
+def lock(device_id: int, current_user=Depends(get_current_user)):
+    device = database.get_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     if device["device_type"] != "door_lock":
         raise HTTPException(
             status_code=400, detail="Параметр is_locked можно применять только к девайсам класса door_lock")
-    result = database.lock_device(device_id)
+    result = database.lock_device(device_id, current_user["user_id"])
     return result
 
 # endpoint для открытия замка
 
 
 @app.put("/devices/{device_id}/unlock")
-def unlock(device_id: int):
-    device = database.get_device(device_id)
+def unlock(device_id: int, current_user=Depends(get_current_user)):
+    device = database.get_device(device_id, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     if device["device_type"] != "door_lock":
         raise HTTPException(
             status_code=400, detail="Параметр is_locked можно применять только к девайсам класса door_lock")
-    result = database.unlock_device(device_id)
+    result = database.unlock_device(device_id, current_user["user_id"])
     return result
 # ==============================================================================
 
