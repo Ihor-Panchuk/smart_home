@@ -7,9 +7,9 @@ from pwdlib import PasswordHash
 import os
 import jwt
 from datetime import datetime, timedelta, timezone
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = HTTPBearer()
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
@@ -26,7 +26,8 @@ def create_access_token(user_id, username):
     return token
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+    token = credentials.credentials
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         return {
@@ -100,8 +101,9 @@ def get_device(device_id: int, current_user=Depends(get_current_user)):
 
 
 @app.get("/devices/type/{device_type}")
-def get_device_by_type(device_type: str):
-    devices = database.get_devices_by_type(device_type)
+def get_device_by_type(device_type: str, current_user=Depends(get_current_user)):
+    devices = database.get_devices_by_type(
+        device_type, current_user["user_id"])
     return devices
 
 

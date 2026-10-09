@@ -67,11 +67,11 @@ def get_device(device_id, user_id):  # функция для возвращен�
 
 
 # функция для возвращенния устройста по типу девайса
-def get_devices_by_type(device_type):
+def get_devices_by_type(device_type, user_id):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "SELECT * FROM devices WHERE device_type = %s", (device_type,))
+        "SELECT * FROM devices WHERE device_type = %s AND user_id = %s", (device_type, user_id))
     devices = cursor.fetchall()
     close_connection(cursor, connection)
     return devices_to_dict(devices)
