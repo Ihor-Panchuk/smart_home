@@ -108,8 +108,8 @@ def get_device_by_type(device_type: str, current_user=Depends(get_current_user))
 
 
 @app.get("/devices/is_on/{is_on}")
-def get_devices_by_status(is_on: bool):
-    devices = database.get_devices_by_status(is_on)
+def get_devices_by_status(is_on: bool, current_user=Depends(get_current_user)):
+    devices = database.get_devices_by_status(is_on, current_user["user_id"])
     return devices
 
 
