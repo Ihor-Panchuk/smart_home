@@ -180,8 +180,9 @@ def add_device(data: DeviceData, current_user=Depends(get_current_user)):
 
 
 @app.put("/devices/{device_id}")
-def change_device(device_id: int, data: NameData):
-    device = database.update_device_name(device_id, data.name)
+def change_device(device_id: int, data: NameData, current_user=Depends(get_current_user)):
+    device = database.update_device_name(
+        device_id, data.name, current_user["user_id"])
     if device is None:
         raise HTTPException(status_code=404, detail="Устройство не найдено")
     return device
@@ -217,7 +218,8 @@ def change_brightness(device_id: int, data: BrightnessData, current_user=Depends
     if device["device_type"] != "light":
         raise HTTPException(
             status_code=400, detail="Параметр brightness можно применять только к девайсам класса light")
-    result = database.update_brightness(device_id, data.brightness)
+    result = database.update_brightness(
+        device_id, data.brightness, current_user["user_id"])
     return result
 
 
@@ -230,7 +232,8 @@ def change_temperature(device_id: int, data: TemperatureData, current_user=Depen
     if device["device_type"] != "thermostat":
         raise HTTPException(
             status_code=400, detail="Параметр temperature можно применять только к девайсам класса thermostat")
-    result = database.update_temperature(device_id, data.temperature)
+    result = database.update_temperature(
+        device_id, data.temperature, current_user["user_id"])
     return result
 # ==============================================================================
 

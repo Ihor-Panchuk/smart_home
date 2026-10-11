@@ -28,7 +28,7 @@ def close_connection(cursor, connection):    # отключенние от ба�
 
 # превращаем результат запроса из SQL в список словарей
 keys = ["id", "name", "device_type", "is_on",
-        "brightness", "temperature", "is_locked"]
+        "brightness", "temperature", "is_locked", "user_id"]
 
 
 def devices_to_dict(devices):
@@ -117,11 +117,11 @@ def delete_device(device_id, user_id):  # функция для удаленни
 
 
 # функция для измененния имени устройства
-def update_device_name(device_id, new_name):
+def update_device_name(device_id, new_name, user_id):
     connection = get_connection()
     cursor = connection.cursor()
-    cursor.execute("UPDATE devices SET name = %s WHERE id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked",
-                   (new_name, device_id))
+    cursor.execute("UPDATE devices SET name = %s WHERE id = %s AND user_id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked",
+                   (new_name, device_id, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)
@@ -157,11 +157,11 @@ def turn_off_device(device_id, user_id):  # функция для выключе
 
 
 # функция для измененния яркости устройства
-def update_brightness(device_id, brightness):
+def update_brightness(device_id, brightness, user_id):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "UPDATE devices SET brightness = %s WHERE id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (brightness, device_id))
+        "UPDATE devices SET brightness = %s WHERE id = %s AND user_id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (brightness, device_id, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)
@@ -172,11 +172,11 @@ def update_brightness(device_id, brightness):
 # функция для измененния температуры устройства
 
 
-def update_temperature(device_id, temperature):
+def update_temperature(device_id, temperature, user_id):
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute(
-        "UPDATE devices SET temperature = %s WHERE id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (temperature, device_id))
+        "UPDATE devices SET temperature = %s WHERE id = %s AND user_id = %s RETURNING id, name, device_type, is_on, brightness, temperature, is_locked", (temperature, device_id, user_id))
     device = cursor.fetchone()
     connection.commit()
     close_connection(cursor, connection)
@@ -229,6 +229,7 @@ def create_user(username, password_hash):
         connection.commit()
     except psycopg.errors.UniqueViolation:
         connection.rollback()
+        close_connection(cursor, connection)
         return False
     close_connection(cursor, connection)
     return True
