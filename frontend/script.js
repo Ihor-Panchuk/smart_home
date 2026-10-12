@@ -89,10 +89,15 @@ loginBtn.addEventListener("click", function() {
         })
         .then(function(response) {
             if (response.status === 401) {
-                localStorage.removeItem("token");
-                location.reload();
-                return;
-            }
+            localStorage.removeItem("token");
+            authStatus.textContent = "Сессия истекла. Войдите снова.";
+            authStatus.className = "register-error";
+            usernameStatus.textContent = "";
+            lights.textContent = "";
+            thermostats.textContent = "";
+            locks.textContent = "";
+            return null;
+        }
             return response.json();
         })
         .then(function(data) {
@@ -230,12 +235,22 @@ function loadDevices() {
         }
     })
         .then(response => {
-            if (!response.ok) {
-                return;
+            if (response.status === 401) {
+                localStorage.removeItem("token");
+                authStatus.textContent = "Сессия истекла. Войдите снова.";
+                authStatus.className = "register-error";
+                usernameStatus.textContent = "";
+                return null;
             }
+            if (!response.ok) {
+                throw new Error("Ошибка загрузки устройств");
+            }    
             return response.json();
         })
         .then(data => {
+            if (data === null) {
+                return;
+            }    
             for (let i = 0; i < data.length; i++) {
                     const card = document.createElement("div");
 
@@ -526,8 +541,13 @@ if (localStorage.getItem("token")) {
     .then(function(response) {
         if (response.status === 401) {
             localStorage.removeItem("token");
-            location.reload();
-            return;
+            authStatus.textContent = "Сессия истекла. Войдите снова.";
+            authStatus.className = "register-error";
+            usernameStatus.textContent = "";
+            lights.textContent = "";
+            thermostats.textContent = "";
+            locks.textContent = "";
+            return null;
         }
         return response.json();
     })
@@ -572,3 +592,26 @@ logoutBtn.addEventListener("click", function() {
     thermostats.textContent = "";
     locks.textContent = "";
 })
+
+setInterval(function() {
+    if (!localStorage.getItem("token")) {
+        return;
+    }
+
+    fetch("/me", {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    })
+    .then(function(response) {
+        if (response.status === 401) {
+            localStorage.removeItem("token");
+            authStatus.textContent = "Сессия истекла. Войдите снова.";
+            authStatus.className = "register-error";
+            usernameStatus.textContent = "";
+            lights.textContent = "";
+            thermostats.textContent = "";
+            locks.textContent = "";
+        }
+    });
+}, 5000);

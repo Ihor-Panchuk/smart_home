@@ -16,9 +16,11 @@ ALGORITHM = "HS256"
 
 
 def create_access_token(user_id, username):
+    expires = datetime.now(timezone.utc) + timedelta(seconds=30)
     payload = {
         "sub": username,
-        "user_id": user_id
+        "user_id": user_id,
+        "exp": expires
     }
 
     token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=ALGORITHM)
@@ -152,6 +154,10 @@ def del_device(device_id: int, current_user=Depends(get_current_user)):
 
 @app.post("/devices")
 def add_device(data: DeviceData, current_user=Depends(get_current_user)):
+    if data.device_type not in ["light", "thermostat", "door_lock"]:
+        raise HTTPException(
+            status_code=400, detail="Указанный тип девайса не соответствует допустимым"
+        )
     if data.device_type == "light" and data.temperature is not None:
         raise HTTPException(
             status_code=400, detail="Девайсы класа light не имеют параметра temperature")
@@ -171,7 +177,6 @@ def add_device(data: DeviceData, current_user=Depends(get_current_user)):
     if data.device_type != "door_lock" and data.is_locked is not None:
         raise HTTPException(
             status_code=400, detail="Параметр is_locked имеют только девайсы класса door_lock")
-
     device = database.add_device(
         data.name, data.device_type, data.is_on, data.brightness, data.temperature, data.is_locked, current_user["user_id"])
     return device
