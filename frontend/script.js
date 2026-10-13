@@ -272,7 +272,10 @@ function loadDevices() {
                             return;
                         }
                         fetch("/devices/" + data[i].id, {
-                            method: "DELETE"
+                            method: "DELETE",
+                            headers: {
+                                "Authorization": "Bearer " + localStorage.getItem("token")
+                            }
                         })
                         .then(response => {
                             return response.json();

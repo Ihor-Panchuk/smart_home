@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 import database
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
@@ -16,7 +16,7 @@ ALGORITHM = "HS256"
 
 
 def create_access_token(user_id, username):
-    expires = datetime.now(timezone.utc) + timedelta(seconds=30)
+    expires = datetime.now(timezone.utc) + timedelta(minutes=30)
     payload = {
         "sub": username,
         "user_id": user_id,
@@ -48,12 +48,20 @@ password_hash = PasswordHash.recommended()
 
 
 class DeviceData(BaseModel):
-    name: str
+    name: str = Field(min_length=1)
     device_type: str
     brightness: int | None = Field(default=None, ge=0, le=100)
     temperature: int | None = Field(default=None, ge=10, le=30)
     is_on: bool = False
     is_locked: bool | None = None
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, value):
+        value = value.strip()
+        if not value:
+            raise ValueError("Имя устройства не может быть пустым")
+        return value
 
 
 class UserData(BaseModel):
