@@ -32,6 +32,15 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(oauth2_
     token = credentials.credentials
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
+        if "sub" not in payload or "user_id" not in payload:
+            raise HTTPException(
+                status_code=401, detail="Недействительный токен")
+        if type(payload["user_id"]) is not int:
+            raise HTTPException(
+                status_code=401, detail="Недействительный токен")
+        if not isinstance(payload["sub"], str) or not payload["sub"].strip():
+            raise HTTPException(
+                status_code=401, detail="Недействительный токен")
         return {
             "username": payload["sub"],
             "user_id": payload["user_id"]
@@ -307,7 +316,7 @@ def login(user: LoginData):
     if not password_hash.verify(user.password, db_user[2]):
         raise HTTPException(
             status_code=401, detail="Неверное имя пользователя или пароль")
-    token = create_access_token(db_user[0], user.username)
+    token = create_access_token(db_user[0], db_user[1])
 
     return {
         "message": "Вход выполнен",
