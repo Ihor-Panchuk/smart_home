@@ -294,7 +294,6 @@ def unlock(device_id: int, current_user=Depends(get_current_user)):
 
 @app.post("/register")
 def register(user: UserData):
-    print(user.username)
     hashed_password = password_hash.hash(user.password)
     created = database.create_user(user.username, hashed_password)
     if not created:
