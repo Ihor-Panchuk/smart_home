@@ -74,13 +74,13 @@ class DeviceData(BaseModel):
 
 
 class UserData(BaseModel):
-    username: str
-    password: str
+    username: str = Field(min_length=1)
+    password: str = Field(min_length=1)
 
 
 class LoginData(BaseModel):
-    username: str
-    password: str
+    username: str = Field(min_length=1)
+    password: str = Field(min_length=1)
 
 
 class NameData(BaseModel):
