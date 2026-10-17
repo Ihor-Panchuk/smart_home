@@ -77,10 +77,26 @@ class UserData(BaseModel):
     username: str = Field(min_length=1)
     password: str = Field(min_length=1)
 
+    @field_validator("username")
+    @classmethod
+    def validate_username(cls, value):
+        value = value.strip()
+        if not value:
+            raise ValueError("Имя пользователя не может быть пустым")
+        return value
+
 
 class LoginData(BaseModel):
     username: str = Field(min_length=1)
     password: str = Field(min_length=1)
+
+    @field_validator("username")
+    @classmethod
+    def validate_username(cls, value):
+        value = value.strip()
+        if not value:
+            raise ValueError("Имя пользователя не может быть пустым")
+        return value
 
 
 class NameData(BaseModel):
