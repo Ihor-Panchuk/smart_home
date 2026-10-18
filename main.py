@@ -85,6 +85,15 @@ class UserData(BaseModel):
             raise ValueError("Имя пользователя не может быть пустым")
         return value
 
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value):
+        value = value.strip()
+        if not value:
+            raise ValueError(
+                "Пароль не может быть пустым или состоять из пробелов")
+        return value
+
 
 class LoginData(BaseModel):
     username: str = Field(min_length=1)
