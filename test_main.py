@@ -1,4 +1,6 @@
 from main import DeviceData
+from fastapi.testclient import TestClient
+from main import DeviceData, app
 import pytest
 
 
@@ -50,3 +52,12 @@ def test_min_temperature():
                         device_type="thermostat", temperature=10)
 
     assert device.temperature == 10
+
+
+client = TestClient(app)
+
+
+def test_devices_require_auth():
+    response = client.get("/devices")
+
+    assert response.status_code == 401
