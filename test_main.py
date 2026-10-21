@@ -1,6 +1,5 @@
-from main import DeviceData
 from fastapi.testclient import TestClient
-from main import DeviceData, app
+from main import DeviceData, app, create_access_token
 import pytest
 
 
@@ -61,3 +60,23 @@ def test_devices_require_auth():
     response = client.get("/devices")
 
     assert response.status_code == 401
+
+
+def test_devices_invalid_token():
+    response = client.get(
+        "/devices", headers={"Authorization": "Bearer invalid-token"})
+
+    assert response.status_code == 401
+
+
+def test_devices_valid_token(monkeypatch):
+    monkeypatch.setattr("main.JWT_SECRET_KEY", "test-secret")
+
+    token = create_access_token(user_id=1, username="test_user")
+    monkeypatch.setattr("main.database.get_devices", lambda user_id: [])
+    response = client.get(
+        "/devices",
+        headers={"Authorization": f"Bearer {token}"}
+    )
+
+    assert response.status_code == 200
