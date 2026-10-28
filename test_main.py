@@ -50,12 +50,14 @@ def test_device_name_cannot_be_blank(name):
 @pytest.mark.parametrize("brightness", [-1, 101])
 def test_brightness_must_be_between_zero_and_one_hundred(brightness):
     with pytest.raises(ValueError):
-        DeviceData(name="Kitchen Light", device_type="light", brightness=brightness)
+        DeviceData(name="Kitchen Light", device_type="light",
+                   brightness=brightness)
 
 
 @pytest.mark.parametrize("brightness", [0, 100])
 def test_brightness_accepts_boundary_values(brightness):
-    parsed = DeviceData(name="Kitchen Light", device_type="light", brightness=brightness)
+    parsed = DeviceData(name="Kitchen Light",
+                        device_type="light", brightness=brightness)
 
     assert parsed.brightness == brightness
 
@@ -123,12 +125,14 @@ def test_me_returns_authenticated_username(auth_headers):
 
 
 def test_register_creates_user_with_hashed_password(monkeypatch):
-    monkeypatch.setattr(main.password_hash, "hash", lambda password: f"hashed:{password}")
+    monkeypatch.setattr(main.password_hash, "hash",
+                        lambda password: f"hashed:{password}")
     calls = []
     monkeypatch.setattr(
         main.database,
         "create_user",
-        lambda username, password_hash: calls.append((username, password_hash)) or True,
+        lambda username, password_hash: calls.append(
+            (username, password_hash)) or True,
     )
 
     response = client.post(
@@ -143,7 +147,8 @@ def test_register_creates_user_with_hashed_password(monkeypatch):
 
 def test_register_rejects_duplicate_username(monkeypatch):
     monkeypatch.setattr(main.password_hash, "hash", lambda password: "hashed")
-    monkeypatch.setattr(main.database, "create_user", lambda username, password_hash: False)
+    monkeypatch.setattr(main.database, "create_user",
+                        lambda username, password_hash: False)
 
     response = client.post(
         "/register",
@@ -154,7 +159,8 @@ def test_register_rejects_duplicate_username(monkeypatch):
 
 
 def test_register_rejects_blank_credentials():
-    response = client.post("/register", json={"username": "   ", "password": "secret"})
+    response = client.post(
+        "/register", json={"username": "   ", "password": "secret"})
 
     assert response.status_code == 422
 
@@ -165,7 +171,8 @@ def test_login_returns_access_token(monkeypatch):
         "get_user_by_username",
         lambda username: (USER_ID, username, "stored-hash"),
     )
-    monkeypatch.setattr(main.password_hash, "verify", lambda password, stored: True)
+    monkeypatch.setattr(main.password_hash, "verify",
+                        lambda password, stored: True)
     monkeypatch.setattr(main, "JWT_SECRET_KEY", "test-secret")
 
     response = client.post(
@@ -186,8 +193,10 @@ def test_login_returns_access_token(monkeypatch):
     ids=["unknown-user", "wrong-password"],
 )
 def test_login_rejects_invalid_credentials(monkeypatch, user_record):
-    monkeypatch.setattr(main.database, "get_user_by_username", lambda username: user_record)
-    monkeypatch.setattr(main.password_hash, "verify", lambda password, stored: False)
+    monkeypatch.setattr(main.database, "get_user_by_username",
+                        lambda username: user_record)
+    monkeypatch.setattr(main.password_hash, "verify",
+                        lambda password, stored: False)
 
     response = client.post(
         "/login",
@@ -205,7 +214,8 @@ def test_get_device_returns_device(monkeypatch, auth_headers, device):
     monkeypatch.setattr(
         main.database,
         "get_device",
-        lambda device_id, user_id: calls.append((device_id, user_id)) or device,
+        lambda device_id, user_id: calls.append(
+            (device_id, user_id)) or device,
     )
 
     response = client.get("/devices/1", headers=auth_headers)
@@ -216,7 +226,8 @@ def test_get_device_returns_device(monkeypatch, auth_headers, device):
 
 
 def test_get_missing_device_returns_404(monkeypatch, auth_headers):
-    monkeypatch.setattr(main.database, "get_device", lambda device_id, user_id: None)
+    monkeypatch.setattr(main.database, "get_device",
+                        lambda device_id, user_id: None)
 
     response = client.get("/devices/999", headers=auth_headers)
 
@@ -227,7 +238,8 @@ def test_get_devices_by_type(monkeypatch, auth_headers, device):
     monkeypatch.setattr(
         main.database,
         "get_devices_by_type",
-        lambda device_type, user_id: [device] if device_type == "light" and user_id == USER_ID else [],
+        lambda device_type, user_id: [
+            device] if device_type == "light" and user_id == USER_ID else [],
     )
 
     response = client.get("/devices/type/light", headers=auth_headers)
@@ -240,7 +252,8 @@ def test_get_devices_by_power_status(monkeypatch, auth_headers, device):
     monkeypatch.setattr(
         main.database,
         "get_devices_by_status",
-        lambda is_on, user_id: [device] if is_on is False and user_id == USER_ID else [],
+        lambda is_on, user_id: [
+            device] if is_on is False and user_id == USER_ID else [],
     )
 
     response = client.get("/devices/is_on/false", headers=auth_headers)
@@ -262,7 +275,8 @@ def test_device_status_returns_type_specific_fields(
 ):
     device.update(expected)
     device["device_type"] = device_type
-    monkeypatch.setattr(main.database, "get_device", lambda device_id, user_id: device)
+    monkeypatch.setattr(main.database, "get_device",
+                        lambda device_id, user_id: device)
 
     response = client.get("/devices/1/status", headers=auth_headers)
 
@@ -272,7 +286,8 @@ def test_device_status_returns_type_specific_fields(
 
 def test_device_status_rejects_unknown_device_type(monkeypatch, auth_headers, device):
     device["device_type"] = "unknown"
-    monkeypatch.setattr(main.database, "get_device", lambda device_id, user_id: device)
+    monkeypatch.setattr(main.database, "get_device",
+                        lambda device_id, user_id: device)
 
     response = client.get("/devices/1/status", headers=auth_headers)
 
@@ -299,7 +314,8 @@ def test_create_light(monkeypatch, auth_headers, device):
 
     assert response.status_code == 200
     assert response.json() == device
-    assert calls == [("Kitchen Light", "light", False, 50, None, None, USER_ID)]
+    assert calls == [
+        ("Kitchen Light", "light", False, 50, None, None, USER_ID)]
 
 
 @pytest.mark.parametrize(
@@ -349,7 +365,8 @@ def test_update_device_name(monkeypatch, auth_headers, device):
     monkeypatch.setattr(
         main.database,
         "update_device_name",
-        lambda device_id, name, user_id: calls.append((device_id, name, user_id)) or device,
+        lambda device_id, name, user_id: calls.append(
+            (device_id, name, user_id)) or device,
     )
 
     response = client.put(
@@ -364,7 +381,8 @@ def test_update_device_name(monkeypatch, auth_headers, device):
 
 
 def test_update_missing_device_returns_404(monkeypatch, auth_headers):
-    monkeypatch.setattr(main.database, "update_device_name", lambda *args: None)
+    monkeypatch.setattr(
+        main.database, "update_device_name", lambda *args: None)
 
     response = client.put(
         "/devices/999",
@@ -390,7 +408,8 @@ def test_switch_device_power(
     monkeypatch.setattr(
         main.database,
         database_function,
-        lambda device_id, user_id: calls.append((device_id, user_id)) or updated,
+        lambda device_id, user_id: calls.append(
+            (device_id, user_id)) or updated,
     )
 
     response = client.put(f"/devices/1/{endpoint}", headers=auth_headers)
@@ -403,8 +422,10 @@ def test_switch_device_power(
 @pytest.mark.parametrize(
     ("endpoint", "device_type", "payload", "database_function", "expected_key"),
     [
-        ("brightness", "light", {"brightness": 75}, "update_brightness", "brightness"),
-        ("temperature", "thermostat", {"temperature": 22}, "update_temperature", "temperature"),
+        ("brightness", "light", {"brightness": 75},
+         "update_brightness", "brightness"),
+        ("temperature", "thermostat", {
+         "temperature": 22}, "update_temperature", "temperature"),
     ],
 )
 def test_update_device_setting(
@@ -420,14 +441,17 @@ def test_update_device_setting(
     device["device_type"] = device_type
     updated = {**device, **payload}
     calls = []
-    monkeypatch.setattr(main.database, "get_device", lambda device_id, user_id: device)
+    monkeypatch.setattr(main.database, "get_device",
+                        lambda device_id, user_id: device)
     monkeypatch.setattr(
         main.database,
         database_function,
-        lambda device_id, value, user_id: calls.append((device_id, value, user_id)) or updated,
+        lambda device_id, value, user_id: calls.append(
+            (device_id, value, user_id)) or updated,
     )
 
-    response = client.put(f"/devices/1/{endpoint}", headers=auth_headers, json=payload)
+    response = client.put(
+        f"/devices/1/{endpoint}", headers=auth_headers, json=payload)
 
     assert response.status_code == 200
     assert response.json() == updated
@@ -445,9 +469,11 @@ def test_setting_cannot_be_applied_to_wrong_device_type(
     monkeypatch, auth_headers, device, endpoint, device_type, payload
 ):
     device["device_type"] = device_type
-    monkeypatch.setattr(main.database, "get_device", lambda device_id, user_id: device)
+    monkeypatch.setattr(main.database, "get_device",
+                        lambda device_id, user_id: device)
 
-    response = client.put(f"/devices/1/{endpoint}", headers=auth_headers, json=payload)
+    response = client.put(
+        f"/devices/1/{endpoint}", headers=auth_headers, json=payload)
 
     assert response.status_code == 400
 
@@ -463,11 +489,13 @@ def test_lock_state_endpoints(monkeypatch, auth_headers, device, endpoint, datab
     device["device_type"] = "door_lock"
     updated = {**device, "is_locked": endpoint == "lock"}
     calls = []
-    monkeypatch.setattr(main.database, "get_device", lambda device_id, user_id: device)
+    monkeypatch.setattr(main.database, "get_device",
+                        lambda device_id, user_id: device)
     monkeypatch.setattr(
         main.database,
         database_function,
-        lambda device_id, user_id: calls.append((device_id, user_id)) or updated,
+        lambda device_id, user_id: calls.append(
+            (device_id, user_id)) or updated,
     )
 
     response = client.put(f"/devices/1/{endpoint}", headers=auth_headers)
@@ -482,7 +510,8 @@ def test_lock_state_endpoints_reject_non_lock_device(
     monkeypatch, auth_headers, device, endpoint
 ):
     device["device_type"] = "light"
-    monkeypatch.setattr(main.database, "get_device", lambda device_id, user_id: device)
+    monkeypatch.setattr(main.database, "get_device",
+                        lambda device_id, user_id: device)
 
     response = client.put(f"/devices/1/{endpoint}", headers=auth_headers)
 
@@ -494,7 +523,8 @@ def test_delete_device(monkeypatch, auth_headers, device):
     monkeypatch.setattr(
         main.database,
         "delete_device",
-        lambda device_id, user_id: calls.append((device_id, user_id)) or device,
+        lambda device_id, user_id: calls.append(
+            (device_id, user_id)) or device,
     )
 
     response = client.delete("/devices/1", headers=auth_headers)
@@ -505,7 +535,8 @@ def test_delete_device(monkeypatch, auth_headers, device):
 
 
 def test_delete_missing_device_returns_404(monkeypatch, auth_headers):
-    monkeypatch.setattr(main.database, "delete_device", lambda device_id, user_id: None)
+    monkeypatch.setattr(main.database, "delete_device",
+                        lambda device_id, user_id: None)
 
     response = client.delete("/devices/999", headers=auth_headers)
 
